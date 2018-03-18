@@ -1,0 +1,34 @@
+{
+  "name": "lunar-core",
+  "version": "0.0.1",
+  "description": "Tools to assist with mocking GraphQL schemas",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ezcater/lunar-core.git"
+  },
+  "keywords": [
+    "Apollo",
+    "GraphQL",
+    "mocking",
+    "lunar",
+    "tools"
+  ],
+  "author": "CraigCav",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ezcater/lunar-core/issues"
+  },
+  "homepage": "https://github.com/ezcater/lunar-core#readme",
+  "devDependencies": {
+    "casual": "^1.5.19",
+    "jest": "^22.4.2"
+  },
+  "dependencies": {
+    "graphql": "^0.13.2",
+    "graphql-tools": "^2.23.1"
+  }
+}
