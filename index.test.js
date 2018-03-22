@@ -3,7 +3,10 @@ const {
   //  addMockFunctionsToSchema
 } = require('graphql-tools');
 const { graphql } = require('graphql');
-const { addMockFunctionsToSchema } = require('./');
+const {
+  addMockFunctionsToSchema,
+  removeMockFunctionsFromSchema
+} = require('./');
 const { cacheResolver } = require('./store');
 
 const schemaString = `
@@ -124,5 +127,30 @@ describe('Mock', () => {
       );
       expect(fooInstance).toEqual(fooInstance2);
     });
+  });
+
+  it('lets you remove previously mocked values', async () => {
+    const schema = buildSchemaFromTypeDefinitions(schemaString);
+    const mocks = {
+      Foo: () => ({
+        stringValue: 'baz'
+      })
+    };
+    addMockFunctionsToSchema({ schema, mocks });
+    const testQuery = `{
+      fooInstance {
+        stringValue
+      }
+    }`;
+    await graphql(schema, testQuery);
+
+    removeMockFunctionsFromSchema({ schema, mocks });
+
+    const { data: { fooInstance: fooInstance2 } } = await graphql(
+      schema,
+      testQuery
+    );
+    const { data: { fooInstance } } = await graphql(schema, testQuery);
+    expect(fooInstance).toEqual(null);
   });
 });
