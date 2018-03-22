@@ -5,7 +5,8 @@ const {
 const { graphql } = require('graphql');
 const {
   addMockFunctionsToSchema,
-  removeMockFunctionsFromSchema
+  removeMockFunctionsFromSchema,
+  combineMocks
 } = require('./');
 const { cacheResolver } = require('./store');
 
@@ -26,8 +27,13 @@ const schemaString = `
     fooInstance: Foo
     fooById(id:String!): Foo
   }
+  type RootMutation {
+    returnIntArgument(i: Int): Int
+    returnStringArgument(s: String): String
+  }
   schema {
     query: RootQuery
+    mutation: RootMutation
   }
 `;
 
@@ -152,5 +158,102 @@ describe('Mock', () => {
     );
     const { data: { fooInstance } } = await graphql(schema, testQuery);
     expect(fooInstance).toEqual(null);
+  });
+
+  describe('multiple calls to add mocks', () => {
+    it('replaces the previously defined mocks with the default auto-mocking behavior', async () => {
+      const schema = buildSchemaFromTypeDefinitions(schemaString);
+      const fooMocks = {
+        Foo: () => ({
+          id: Math.random(),
+          stringValue: 'foo'
+        })
+      };
+      const barMocks = {
+        Bar: () => ({
+          id: Math.random(),
+          stringValue: 'bar'
+        })
+      };
+      addMockFunctionsToSchema({ schema, mocks: fooMocks });
+      addMockFunctionsToSchema({ schema, mocks: barMocks });
+      const testQuery = `{
+        fooInstance {
+          id
+          stringValue
+          bar {
+            stringValue
+          }
+        }
+      }`;
+      const { data: { fooInstance } } = await graphql(schema, testQuery);
+      expect(fooInstance.stringValue).toEqual('Hello World');
+      expect(fooInstance.bar.stringValue).toEqual('bar');
+    });
+  });
+
+  describe('combining mocks', () => {
+    it("let's you mock combine mocks for different types", async () => {
+      const schema = buildSchemaFromTypeDefinitions(schemaString);
+      const fooMocks = {
+        Foo: () => ({
+          id: Math.random(),
+          stringValue: 'foo'
+        })
+      };
+      const barMocks = {
+        Bar: () => ({
+          id: Math.random(),
+          stringValue: 'bar'
+        })
+      };
+
+      const mocks = [fooMocks, barMocks];
+
+      addMockFunctionsToSchema({ schema, mocks });
+      const testQuery = `{
+        fooInstance {
+          id
+          stringValue
+          bar {
+            stringValue
+          }
+        }
+      }`;
+      const { data: { fooInstance } } = await graphql(schema, testQuery);
+      expect(fooInstance.stringValue).toEqual('foo');
+      expect(fooInstance.bar.stringValue).toEqual('bar');
+    });
+
+    it("let's you combine mutations from separately defined mocks", async () => {
+      const schema = buildSchemaFromTypeDefinitions(schemaString);
+      const left = {
+        RootMutation: () => ({
+          returnStringArgument: (obj, args) => args.s
+        })
+      };
+      const right = {
+        RootMutation: () => ({
+          returnIntArgument: (obj, args) => args.i
+        })
+      };
+
+      const mocks = [left, right];
+
+      addMockFunctionsToSchema({ schema, mocks });
+      const testQuery = `
+        mutation {
+          returnStringArgument(s: "adieu")
+          returnIntArgument(i: 6)
+        }
+      `;
+
+      const {
+        data: { returnStringArgument, returnIntArgument }
+      } = await graphql(schema, testQuery);
+
+      expect(returnStringArgument).toEqual('adieu');
+      expect(returnIntArgument).toEqual(6);
+    });
   });
 });
