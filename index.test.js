@@ -256,4 +256,44 @@ describe('Mock', () => {
       expect(returnIntArgument).toEqual(6);
     });
   });
+
+  describe('extended context', () => {
+    it("provides find function to query resolver's context argument", async () => {
+      const schema = buildSchemaFromTypeDefinitions(schemaString);
+      const fooResolver = jest.fn(() => ({
+        id: Math.random(),
+        stringValue: 'foo'
+      }));
+      const mocks = {
+        Foo: fooResolver
+      };
+      addMockFunctionsToSchema({ schema, mocks });
+      const testQuery = `{
+        fooInstance {
+          stringValue
+        }
+      }`;
+      await graphql(schema, testQuery);
+
+      expect(typeof fooResolver.mock.calls[0][2].find).toBeDefined();
+    });
+
+    it("provides find function to mutation resolver's context argument", async () => {
+      const schema = buildSchemaFromTypeDefinitions(schemaString);
+      const mutationResolver = jest.fn((obj, args) => args.s);
+      const mocks = {
+        RootMutation: () => ({ returnStringArgument: mutationResolver })
+      };
+      addMockFunctionsToSchema({ schema, mocks });
+      const testQuery = `
+        mutation {
+          returnStringArgument(s: "adieu")
+        }
+      `;
+
+      await graphql(schema, testQuery);
+
+      expect(typeof mutationResolver.mock.calls[0][2].find).toBeDefined();
+    });
+  });
 });

@@ -16,9 +16,41 @@ const store = schema => {
 
   const reset = () => stores.delete(schema);
 
+  const find = path => {
+    const entities = stores.get(schema);
+
+    if (!entities) return;
+
+    return path.split('.').reduce((obj, fieldName) => {
+      if (!obj) return;
+
+      const childMap = entities.get(obj);
+
+      if (!childMap) return;
+
+      if (!Array.isArray(obj)) return childMap.get(fieldName);
+
+      return obj.map(x => entities.get(x)).map(x => x && x.get(fieldName));
+    }, root);
+  };
+
+  const clear = path => {
+    const i = path.lastIndexOf('.');
+    const obj = i < 0 ? root : find(path.slice(0, i));
+
+    if (!obj) return;
+
+    const fieldName = path.slice(i + 1);
+    const entities = stores.get(schema);
+    const childMap = entities.get(obj);
+    childMap.set(fieldName, null);
+  };
+
   return {
-    track,
-    reset
+    clear,
+    find,
+    reset,
+    track
   };
 };
 
