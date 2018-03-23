@@ -4,7 +4,8 @@
   "description": "Tools to assist with mocking GraphQL schemas",
   "main": "index.js",
   "scripts": {
-    "test": "jest --watch"
+    "test": "jest --watch",
+    "lint": "eslint --ignore-path .gitignore ."
   },
   "repository": {
     "type": "git",
@@ -25,6 +26,7 @@
   "homepage": "https://github.com/ezcater/lunar-core#readme",
   "devDependencies": {
     "casual": "^1.5.19",
+    "danger": "^3.3.2",
     "eslint-config-airbnb": "^16.1.0",
     "eslint-config-prettier": "^2.9.0",
     "eslint-plugin-filenames": "^1.2.0",

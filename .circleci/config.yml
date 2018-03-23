@@ -1,0 +1,29 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/node:9.5
+    working_directory: ~/lunar-core
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+          - node-cache-{{ arch }}-{{ .Branch }}-{{ checksum "package.json" }}
+          - node-cache-{{ arch }}-{{ .Branch }}
+          - node-cache-{{ arch }}
+      - run:
+          name: NPM Install
+          command: npm install
+      - save_cache:
+          paths:
+            - node_modules
+          key: node-cache-{{ arch }}-{{ .Branch }}-{{ checksum "package.json" }}
+      - run:
+          name: Lint Validation
+          command: npm run lint
+      - run:
+          name: Units Tests
+          command: npx jest
+      - run:
+          name: Danger
+          command: npx danger ci
