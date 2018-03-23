@@ -7,8 +7,8 @@ const combineMocks = (schema, ...mocks) => {
       ...right,
       [MutationTypeName]: () => ({
         ...unwrap(left[MutationTypeName]),
-        ...unwrap(right[MutationTypeName])
-      })
+        ...unwrap(right[MutationTypeName]),
+      }),
     }),
     {}
   );

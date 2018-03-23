@@ -1,14 +1,9 @@
 const {
-  buildSchemaFromTypeDefinitions
+  buildSchemaFromTypeDefinitions,
   //  addMockFunctionsToSchema
 } = require('graphql-tools');
-const { graphql } = require('graphql');
-const {
-  addMockFunctionsToSchema,
-  removeMockFunctionsFromSchema,
-  combineMocks
-} = require('./');
-const { cacheResolver } = require('./store');
+const {graphql} = require('graphql');
+const {addMockFunctionsToSchema, removeMockFunctionsFromSchema} = require('./');
 
 const schemaString = `
   type Foo {
@@ -40,25 +35,23 @@ const schemaString = `
 describe('Mock', () => {
   it('mocks the default types for you', () => {
     const schema = buildSchemaFromTypeDefinitions(schemaString);
-    addMockFunctionsToSchema({ schema });
+    addMockFunctionsToSchema({schema});
     const testQuery = `{
       intValue
       stringValue
       boolValue
     }`;
-    return graphql(schema, testQuery).then(
-      ({ data: { intValue, stringValue, boolValue } }) => {
-        expect(intValue).toBeGreaterThanOrEqual(-1000);
-        expect(intValue).toBeLessThanOrEqual(1000);
-        expect(typeof stringValue).toEqual('string');
-        expect(typeof boolValue).toEqual('boolean');
-      }
-    );
+    return graphql(schema, testQuery).then(({data: {intValue, stringValue, boolValue}}) => {
+      expect(intValue).toBeGreaterThanOrEqual(-1000);
+      expect(intValue).toBeLessThanOrEqual(1000);
+      expect(typeof stringValue).toEqual('string');
+      expect(typeof boolValue).toEqual('boolean');
+    });
   });
 
   it('mocks object types', () => {
     const schema = buildSchemaFromTypeDefinitions(schemaString);
-    addMockFunctionsToSchema({ schema });
+    addMockFunctionsToSchema({schema});
     const testQuery = `{
       fooInstance {
         id
@@ -67,7 +60,7 @@ describe('Mock', () => {
         }
       }
     }`;
-    return graphql(schema, testQuery).then(({ data: { fooInstance } }) => {
+    return graphql(schema, testQuery).then(({data: {fooInstance}}) => {
       expect(typeof fooInstance).toEqual('object');
       expect(typeof fooInstance.bar).toEqual('object');
     });
@@ -77,19 +70,16 @@ describe('Mock', () => {
     const schema = buildSchemaFromTypeDefinitions(schemaString);
     const mocks = {
       Foo: () => ({
-        stringValue: 'baz'
-      })
+        stringValue: 'baz',
+      }),
     };
-    addMockFunctionsToSchema({ schema, mocks });
+    addMockFunctionsToSchema({schema, mocks});
     const testQuery = `{
       fooInstance {
         stringValue
       }
     }`;
-    const { data: { fooInstance: { stringValue } } } = await graphql(
-      schema,
-      testQuery
-    );
+    const {data: {fooInstance: {stringValue}}} = await graphql(schema, testQuery);
     expect(stringValue).toEqual('baz');
   });
 
@@ -99,38 +89,32 @@ describe('Mock', () => {
       const mocks = {
         Foo: () => ({
           id: Math.random(),
-          stringValue: 'baz'
-        })
+          stringValue: 'baz',
+        }),
       };
-      addMockFunctionsToSchema({ schema, mocks });
+      addMockFunctionsToSchema({schema, mocks});
       const testQuery = `{
         fooInstance {
           id
           stringValue
         }
       }`;
-      const { data: { fooInstance } } = await graphql(schema, testQuery);
-      const { data: { fooInstance: fooInstance2 } } = await graphql(
-        schema,
-        testQuery
-      );
+      const {data: {fooInstance}} = await graphql(schema, testQuery);
+      const {data: {fooInstance: fooInstance2}} = await graphql(schema, testQuery);
       expect(fooInstance).toEqual(fooInstance2);
     });
 
     it('uses consistent mocked values', async () => {
       const schema = buildSchemaFromTypeDefinitions(schemaString);
-      addMockFunctionsToSchema({ schema });
+      addMockFunctionsToSchema({schema});
       const testQuery = `{
         fooInstance {
           id
           stringValue
         }
       }`;
-      const { data: { fooInstance } } = await graphql(schema, testQuery);
-      const { data: { fooInstance: fooInstance2 } } = await graphql(
-        schema,
-        testQuery
-      );
+      const {data: {fooInstance}} = await graphql(schema, testQuery);
+      const {data: {fooInstance: fooInstance2}} = await graphql(schema, testQuery);
       expect(fooInstance).toEqual(fooInstance2);
     });
   });
@@ -139,10 +123,10 @@ describe('Mock', () => {
     const schema = buildSchemaFromTypeDefinitions(schemaString);
     const mocks = {
       Foo: () => ({
-        stringValue: 'baz'
-      })
+        stringValue: 'baz',
+      }),
     };
-    addMockFunctionsToSchema({ schema, mocks });
+    addMockFunctionsToSchema({schema, mocks});
     const testQuery = `{
       fooInstance {
         stringValue
@@ -150,13 +134,9 @@ describe('Mock', () => {
     }`;
     await graphql(schema, testQuery);
 
-    removeMockFunctionsFromSchema({ schema, mocks });
+    removeMockFunctionsFromSchema({schema, mocks});
 
-    const { data: { fooInstance: fooInstance2 } } = await graphql(
-      schema,
-      testQuery
-    );
-    const { data: { fooInstance } } = await graphql(schema, testQuery);
+    const {data: {fooInstance}} = await graphql(schema, testQuery);
     expect(fooInstance).toEqual(null);
   });
 
@@ -166,17 +146,17 @@ describe('Mock', () => {
       const fooMocks = {
         Foo: () => ({
           id: Math.random(),
-          stringValue: 'foo'
-        })
+          stringValue: 'foo',
+        }),
       };
       const barMocks = {
         Bar: () => ({
           id: Math.random(),
-          stringValue: 'bar'
-        })
+          stringValue: 'bar',
+        }),
       };
-      addMockFunctionsToSchema({ schema, mocks: fooMocks });
-      addMockFunctionsToSchema({ schema, mocks: barMocks });
+      addMockFunctionsToSchema({schema, mocks: fooMocks});
+      addMockFunctionsToSchema({schema, mocks: barMocks});
       const testQuery = `{
         fooInstance {
           id
@@ -186,7 +166,7 @@ describe('Mock', () => {
           }
         }
       }`;
-      const { data: { fooInstance } } = await graphql(schema, testQuery);
+      const {data: {fooInstance}} = await graphql(schema, testQuery);
       expect(fooInstance.stringValue).toEqual('Hello World');
       expect(fooInstance.bar.stringValue).toEqual('bar');
     });
@@ -198,19 +178,19 @@ describe('Mock', () => {
       const fooMocks = {
         Foo: () => ({
           id: Math.random(),
-          stringValue: 'foo'
-        })
+          stringValue: 'foo',
+        }),
       };
       const barMocks = {
         Bar: () => ({
           id: Math.random(),
-          stringValue: 'bar'
-        })
+          stringValue: 'bar',
+        }),
       };
 
       const mocks = [fooMocks, barMocks];
 
-      addMockFunctionsToSchema({ schema, mocks });
+      addMockFunctionsToSchema({schema, mocks});
       const testQuery = `{
         fooInstance {
           id
@@ -220,7 +200,7 @@ describe('Mock', () => {
           }
         }
       }`;
-      const { data: { fooInstance } } = await graphql(schema, testQuery);
+      const {data: {fooInstance}} = await graphql(schema, testQuery);
       expect(fooInstance.stringValue).toEqual('foo');
       expect(fooInstance.bar.stringValue).toEqual('bar');
     });
@@ -229,18 +209,18 @@ describe('Mock', () => {
       const schema = buildSchemaFromTypeDefinitions(schemaString);
       const left = {
         RootMutation: () => ({
-          returnStringArgument: (obj, args) => args.s
-        })
+          returnStringArgument: (obj, args) => args.s,
+        }),
       };
       const right = {
         RootMutation: () => ({
-          returnIntArgument: (obj, args) => args.i
-        })
+          returnIntArgument: (obj, args) => args.i,
+        }),
       };
 
       const mocks = [left, right];
 
-      addMockFunctionsToSchema({ schema, mocks });
+      addMockFunctionsToSchema({schema, mocks});
       const testQuery = `
         mutation {
           returnStringArgument(s: "adieu")
@@ -248,9 +228,7 @@ describe('Mock', () => {
         }
       `;
 
-      const {
-        data: { returnStringArgument, returnIntArgument }
-      } = await graphql(schema, testQuery);
+      const {data: {returnStringArgument, returnIntArgument}} = await graphql(schema, testQuery);
 
       expect(returnStringArgument).toEqual('adieu');
       expect(returnIntArgument).toEqual(6);
@@ -262,12 +240,12 @@ describe('Mock', () => {
       const schema = buildSchemaFromTypeDefinitions(schemaString);
       const fooResolver = jest.fn(() => ({
         id: Math.random(),
-        stringValue: 'foo'
+        stringValue: 'foo',
       }));
       const mocks = {
-        Foo: fooResolver
+        Foo: fooResolver,
       };
-      addMockFunctionsToSchema({ schema, mocks });
+      addMockFunctionsToSchema({schema, mocks});
       const testQuery = `{
         fooInstance {
           stringValue
@@ -282,9 +260,9 @@ describe('Mock', () => {
       const schema = buildSchemaFromTypeDefinitions(schemaString);
       const mutationResolver = jest.fn((obj, args) => args.s);
       const mocks = {
-        RootMutation: () => ({ returnStringArgument: mutationResolver })
+        RootMutation: () => ({returnStringArgument: mutationResolver}),
       };
-      addMockFunctionsToSchema({ schema, mocks });
+      addMockFunctionsToSchema({schema, mocks});
       const testQuery = `
         mutation {
           returnStringArgument(s: "adieu")
