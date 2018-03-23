@@ -23,13 +23,15 @@ const store = schema => {
     return path.split('.').reduce((obj, fieldName) => {
       if (!obj) return;
 
+      if (Array.isArray(obj)) {
+        return obj.map(x => entities.get(x)).map(x => x && x.get(fieldName));
+      }
+
       const childMap = entities.get(obj);
 
       if (!childMap) return;
 
-      if (!Array.isArray(obj)) return childMap.get(fieldName);
-
-      return obj.map(x => entities.get(x)).map(x => x && x.get(fieldName));
+      return childMap.get(fieldName);
     }, root);
   };
 
