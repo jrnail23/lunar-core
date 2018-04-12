@@ -21,6 +21,7 @@ const schemaString = `
     boolValue: Boolean
     fooInstance: Foo
     fooById(id:String!): Foo
+    foos(offset: Int = 0, limit: Int = 1): [Foo]
   }
   type RootMutation {
     returnIntArgument(i: Int): Int
@@ -116,6 +117,28 @@ describe('Mock', () => {
       const {data: {fooInstance}} = await graphql(schema, testQuery);
       const {data: {fooInstance: fooInstance2}} = await graphql(schema, testQuery);
       expect(fooInstance).toEqual(fooInstance2);
+    });
+
+    it('varies mocks by query params', async () => {
+      const schema = buildSchemaFromTypeDefinitions(schemaString);
+      const mocks = {
+        Foo: () => ({
+          id: Math.random(),
+          stringValue: 'baz',
+        }),
+      };
+      addMockFunctionsToSchema({schema, mocks});
+      const testQuery = `query FooPageQuery($offset: Int, $limit: Int) {
+        foos(offset: $offset, limit: $limit) {
+          id
+          stringValue
+        }
+      }`;
+      const {data: {foos}} = await graphql(schema, testQuery, undefined, undefined, {offset: 5, limit: 10});
+      const {data: {foos: foos2}} = await graphql(schema, testQuery, undefined, undefined, {offset: 15, limit: 10});
+      const {data: {foos: foos3}} = await graphql(schema, testQuery, undefined, undefined, {offset: 5, limit: 10});
+      expect(foos).not.toEqual(foos2);
+      expect(foos).toEqual(foos3);
     });
   });
 
