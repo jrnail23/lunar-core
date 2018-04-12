@@ -233,6 +233,38 @@ describe('Mock', () => {
       expect(returnStringArgument).toEqual('adieu');
       expect(returnIntArgument).toEqual(6);
     });
+
+    it("does not stomp on previously returned mock values", async () => {
+      const schema = buildSchemaFromTypeDefinitions(schemaString);
+      const left = {
+        Foo: () => ({
+          id: Math.random(),
+          stringValue: 'baz',
+        }),
+      };
+      const right = {
+        RootMutation: () => ({
+          returnIntArgument: (obj, args) => args.i,
+        }),
+      };
+
+      addMockFunctionsToSchema({schema, mocks: [left]});
+
+      const testQuery = `{
+        fooInstance {
+          id
+          stringValue
+        }
+      }`;
+
+      const {data: {fooInstance}} = await graphql(schema, testQuery);
+
+      addMockFunctionsToSchema({schema, mocks: [left, right]});
+
+      const {data: {fooInstance: fooInstance2}} = await graphql(schema, testQuery);
+
+      expect(fooInstance).toEqual(fooInstance2);
+    });
   });
 
   describe('extended context', () => {
