@@ -5,13 +5,11 @@ const stores = new WeakMap();
 const root = {};
 
 const store = schema => {
-  const uniqueKey  = (params, info) => `${JSON.stringify(params)}${info.fieldName}`;
-
   const track = generator => (...args) => {
-    const [obj, params, , info] = args;
+    const [obj, , , info] = args;
     const entities = get(stores, schema, () => new WeakMap());
     const childMap = get(entities, obj || root, () => new Map());
-    return get(childMap, uniqueKey(params, info), () => generator(...args));
+    return get(childMap, info.fieldName, () => generator(...args));
   };
 
   const reset = () => stores.delete(schema);
