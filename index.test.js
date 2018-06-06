@@ -234,7 +234,7 @@ describe('Mock', () => {
       expect(returnIntArgument).toEqual(6);
     });
 
-    it("does not stomp on previously returned mock values", async () => {
+    it('does not stomp on previously returned mock values', async () => {
       const schema = buildSchemaFromTypeDefinitions(schemaString);
       const left = {
         Foo: () => ({
