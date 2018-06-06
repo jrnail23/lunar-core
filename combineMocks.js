@@ -27,6 +27,9 @@ const chainMockExecution = mocks => {
       const wrapperFunction = function() {
         return funcArray.reduce((obj, func) => {
           const funcResult = func.apply(null, arguments);
+          if (funcResult === null) {
+            return null;
+          }
           return Object.assign(obj, funcResult);
         }, {});
       };
