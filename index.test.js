@@ -9,6 +9,8 @@ const schemaString = `
   type Foo {
     id: ID!
     stringValue: String
+    boolValue: Boolean
+    intValue: Int
     bar: Bar
   }
   type Bar {
@@ -264,6 +266,44 @@ describe('Mock', () => {
       const {data: {fooInstance: fooInstance2}} = await graphql(schema, testQuery);
 
       expect(fooInstance).toEqual(fooInstance2);
+    });
+
+    it('deep merges properties of partial mocks', async () => {
+      const schema = buildSchemaFromTypeDefinitions(schemaString);
+      const fooMocksBase = {
+        Foo: () => ({
+          id: Math.random(),
+          stringValue: 'foo',
+          boolValue: true,
+          intValue: 54,
+        }),
+      };
+      const fooMocksOverrideOne = {
+        Foo: () => ({
+          stringValue: 'bar',
+        }),
+      };
+      const fooMocksOverrideTwo = {
+        Foo: () => ({
+          intValue: 56,
+        }),
+      };
+      addMockFunctionsToSchema({
+        schema,
+        mocks: [fooMocksBase, fooMocksOverrideOne, fooMocksOverrideTwo],
+      });
+      const testQuery = `{
+        fooInstance {
+          id
+          stringValue
+          boolValue
+          intValue
+        }
+      }`;
+      const {data: {fooInstance}} = await graphql(schema, testQuery);
+      expect(fooInstance.stringValue).toEqual('bar');
+      expect(fooInstance.boolValue).toEqual(true);
+      expect(fooInstance.intValue).toEqual(56);
     });
   });
 
