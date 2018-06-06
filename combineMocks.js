@@ -1,28 +1,18 @@
 const unwrap = fn => (fn ? fn() : {});
 
-const chainMerge = (left, right) => {
-  const leftAndRight = {...left};
+const chainMerge = (left, right) =>
+  Object.entries(right).reduce(
+    (merged, [key, rightFn]) => {
+      const mergedFn = key in merged ? mergeFns(merged[key], rightFn) : rightFn;
+      return Object.assign(merged, {[key]: mergedFn});
+    },
+    {...left}
+  );
 
-  Object.keys(right).forEach(key => {
-    if (key in left) {
-      leftAndRight[key] = function() {
-        const rightObj = right[key].apply(null, arguments);
-
-        if (rightObj === null) {
-          return null;
-        }
-
-        return {
-          ...left[key].apply(null, arguments),
-          ...rightObj,
-        };
-      };
-    } else {
-      leftAndRight[key] = right[key];
-    }
-  });
-
-  return leftAndRight;
+const mergeFns = (leftFn, rightFn) => (...args) => {
+  const rightValue = rightFn(...args);
+  if (rightValue === null) return rightValue;
+  return Object.assign(leftFn(...args), rightValue);
 };
 
 const combineMocks = (schema, ...mocks) => {
