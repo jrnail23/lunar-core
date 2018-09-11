@@ -1,3 +1,7 @@
+[![CircleCI](https://circleci.com/gh/ezcater/lunar-core/tree/master.svg?style=svg)](https://circleci.com/gh/ezcater/lunar-core/tree/master)
+[![Maintainability](https://api.codeclimate.com/v1/badges/f7a71a45af56cfa68e24/maintainability)](https://codeclimate.com/github/ezcater/lunar-core/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/f7a71a45af56cfa68e24/test_coverage)](https://codeclimate.com/github/ezcater/lunar-core/test_coverage)
+
 # Lunar Core
 Lunar Core provides the means to generate deterministic results from the
 graphql-tools [mocking framework](https://www.apollographql.com/docs/graphql-tools/mocking.html).
@@ -36,10 +40,6 @@ Craig Cavalier (@CraigCav)
 Mark Faga (@mjfaga)
 
 ## Contributing
-
-[![CircleCI](https://circleci.com/gh/ezcater/lunar-core/tree/master.svg?style=svg)](https://circleci.com/gh/ezcater/lunar-core/tree/master)
-[![Maintainability](https://api.codeclimate.com/v1/badges/f7a71a45af56cfa68e24/maintainability)](https://codeclimate.com/github/ezcater/lunar-core/maintainability)
-[![Test Coverage](https://api.codeclimate.com/v1/badges/f7a71a45af56cfa68e24/test_coverage)](https://codeclimate.com/github/ezcater/lunar-core/test_coverage)
 
 ### Getting Set Up
 ```
