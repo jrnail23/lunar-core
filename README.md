@@ -44,7 +44,6 @@ Mark Faga (@mjfaga)
 ### Getting Set Up
 ```
 npm install
-npm install graphql graphql-tools --no-save // Peer dependencies
 npm test
 ```
 
