@@ -1,4 +1,4 @@
-[![CircleCI](https://circleci.com/gh/ezcater/lunar-core/tree/master.svg?style=svg)](https://circleci.com/gh/ezcater/lunar-core/tree/master)
+e![CircleCI](https://circleci.com/gh/ezcater/lunar-core/tree/master.svg?style=svg)](https://circleci.com/gh/ezcater/lunar-core/tree/master)
 [![Maintainability](https://api.codeclimate.com/v1/badges/f7a71a45af56cfa68e24/maintainability)](https://codeclimate.com/github/ezcater/lunar-core/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/f7a71a45af56cfa68e24/test_coverage)](https://codeclimate.com/github/ezcater/lunar-core/test_coverage)
 
@@ -16,7 +16,7 @@ Lunar Core currently has easy to use packages for use with:
 * Express - [Lunar Express](https://github.com/ezcater/lunar-express)
 
 ### Usage & Test Examples
-_Coming Soon!_
+Check out our [React Boston 2018](https://github.com/mjfaga/react-boston-2018-lunar-launch) demo repo for examples!
 
 ## Features, Issues & Bugs
 Before opening a new issue:
