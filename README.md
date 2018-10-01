@@ -1,4 +1,4 @@
-e![CircleCI](https://circleci.com/gh/ezcater/lunar-core/tree/master.svg?style=svg)](https://circleci.com/gh/ezcater/lunar-core/tree/master)
+[![CircleCI](https://circleci.com/gh/ezcater/lunar-core/tree/master.svg?style=svg)](https://circleci.com/gh/ezcater/lunar-core/tree/master)
 [![Maintainability](https://api.codeclimate.com/v1/badges/f7a71a45af56cfa68e24/maintainability)](https://codeclimate.com/github/ezcater/lunar-core/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/f7a71a45af56cfa68e24/test_coverage)](https://codeclimate.com/github/ezcater/lunar-core/test_coverage)
 
@@ -36,8 +36,8 @@ you find a solution.
 [ezcater/lunar-core/issues](https://github.com/ezcater/lunar-core/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc)
 
 ## Maintainers
-Craig Cavalier (@CraigCav)
-Mark Faga (@mjfaga)
+* Craig Cavalier ([@CraigCav](https://github.com/craigcav))
+* Mark Faga ([@mjfaga](https://github.com/mjfaga))
 
 ## Contributing
 
