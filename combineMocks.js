@@ -15,16 +15,14 @@ const mergeFns = (leftFn, rightFn) => (...args) => {
   return Object.assign(leftFn(...args), rightValue);
 };
 
-const combineMocks = (schema, ...mocks) => {
-  const MutationTypeName = schema.getMutationType().name;
-
+const combineMocks = (...mocks) => {
   return mocks.reduce((left, right) => {
-    const {[MutationTypeName]: leftMutationType, ...leftQueryMock} = left;
-    const {[MutationTypeName]: rightMutationType, ...rightQueryMock} = right;
+    const {Mutation: leftMutationType, ...leftQueryMock} = left;
+    const {Mutation: rightMutationType, ...rightQueryMock} = right;
 
     return {
       ...chainMerge(leftQueryMock, rightQueryMock),
-      [MutationTypeName]: () => ({
+      Mutation: () => ({
         ...unwrap(leftMutationType),
         ...unwrap(rightMutationType),
       }),
