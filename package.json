@@ -39,5 +39,8 @@
   "peerDependencies": {
     "graphql": "^14.0.2",
     "graphql-tools": "^3.1.1"
+  },
+  "dependencies": {
+    "package-lock.json": "^1.0.0"
   }
 }
